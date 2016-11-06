@@ -29,16 +29,19 @@
 
 (defun harp-midi (arguments)
   (load-configuration-file)
-  (let ((filenames (cdr arguments)))
-    (if (null filenames)
-        (format t "Usage: harp-midi FILE...~%")
-        (dolist (filename filenames)
-          (cond ((probe-file filename)
-                 (format t "~a:" filename)
-                 (print-harp (read-midi-file filename)))
-                (t
-                 (format t "File does not exist: ~a~%" filename)
-                 (return)))))))
+  (let ((command (car arguments))
+        (filenames (cdr arguments)))
+    (cond ((null arguments)
+           (format t "Usage: ~a FILE...~%" command))
+          (t
+           (load-configuration-file)
+           (dolist (filename filenames)
+             (cond ((probe-file filename)
+                    (format t "~a:~%" filename)
+                    (print-harp (read-midi-file filename)))
+                   (t
+                    (format t "File does not exist: ~a~%" filename)
+                    (return))))))))
 
 (defun load-configuration-file ()
   (if (probe-file "~/.harp-midi.lisp")
@@ -64,7 +67,7 @@
 (defun print-harp (midi-file)
   (let* ((track (car (midifile-tracks midi-file)))
          (time-signature (find-if #'time-signature-message-p track)))
-    (format t "~%~d |" (message-numerator time-signature))
+    (format t "~d |" (message-numerator time-signature))
     (donotes (key track)
       (format t "~2d" (key->hole key)))
     (format t "~%~d |" (expt 2 (message-denominator time-signature)))
