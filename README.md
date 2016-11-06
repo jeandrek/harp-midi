@@ -24,3 +24,9 @@ the Lisp read-eval-print-loop in this directory and run:
 
 Upon startup Harp-MIDI loads the Lisp file at `~/.harp-midi.lisp`, if it exists. Here you (will be able to &ndash;
 currently there is nothing to configure) put configuration options for Harp-MIDI.
+
+## Current Limitations
+
+* Output format is not configurable.
+* Only works in one octave.
+* Only works for harmonicas with the usual C key &ndash; I think&hellip.
