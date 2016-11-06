@@ -56,7 +56,7 @@
            (,index-name 0 (+ ,index-name 1))
            (,message-name (car ,track-name) (car ,track-name)))
           ((null ,track-name))
-       ;; For some reasons there are always two NOTE ON messages for each note
+       ;; For some reason there are always two NOTE ON messages for each note
        ;; and no NOTE OFF messages :-(
        ;; TODO: Find out why and try to fix it.
        (if (and (oddp ,index-name) (typep ,message-name 'note-on-message))
