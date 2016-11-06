@@ -28,7 +28,6 @@
 ;;;; User interface
 
 (defun harp-midi (arguments)
-  (load-configuration-file)
   (let ((command (car arguments))
         (filenames (cdr arguments)))
     (cond ((null arguments)
