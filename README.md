@@ -6,12 +6,12 @@ into a format for easy playing on a harmonica.
 This format shows, for each note, the number of the hole you need to use and whether you need to blow in it or draw
 out of it, and the time signature.
 
-## Installation
+## Compilation
 
-To use Harp-MIDI you'll need an implementation of [Common Lisp](https://common-lisp.net/) that works with UTF-8.
+To compile Harp-MIDI you'll need an implementation of [Common Lisp](https://common-lisp.net/) that works with UTF-8.
 You will also need the cool [Common Lisp MIDI Library](http://www.doc.gold.ac.uk/isms/lisp/midi/).
 
-The recommended way to install Harp-MIDI and the Lisp libraries it depends on is to use [Quicklisp](https://www.quicklisp.org/)
+The recommended way to compile Harp-MIDI and the Lisp libraries it depends on is to use [Quicklisp](https://www.quicklisp.org/)
 and [Buildapp](http://www.xach.com/lisp/buildapp/).
 Clone this repository, start the Lisp read-eval-print-loop and type the following:
 
@@ -24,6 +24,8 @@ Then enter the following into your shell:
 ```sh
 buildapp --asdf-tree ~/quicklisp --asdf-tree . --load-system harp-midi --entry harp-midi:harp-midi --output harp-midi
 ```
+
+Now you should have a binary `harp-midi` in your current directory.
 
 ## Configuration
 
