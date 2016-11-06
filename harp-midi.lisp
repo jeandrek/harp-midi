@@ -80,6 +80,8 @@
 
 ;;;; Converting MIDI keys to holes and directions
 
+;;; TODO: Make these output correct results for any octave.
+
 (defun key->hole (key)
   (aref #(4 nil 4 nil 5 5 nil 6 nil 6 nil 7)
         (mod key 12)))
