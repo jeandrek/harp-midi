@@ -81,11 +81,11 @@
 ;;;; Converting MIDI keys to holes and directions
 
 (defun key->hole (key)
-  (nth (mod key 12)
-       '(4 nil 4 nil 5 5 nil 6 nil 6 nil 7)))
+  (aref #(4 nil 4 nil 5 5 nil 6 nil 6 nil 7)
+        (mod key 12)))
 
 (defun blowp (key)
-  (nth (mod key 12)
-       '(t nil nil nil t nil nil t nil nil nil nil)))
+  (aref #(t nil nil nil t nil nil t nil nil nil nil)
+        (mod key 12)))
 
 (defun drawp (key) (not (blowp key)))
