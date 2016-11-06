@@ -25,12 +25,14 @@
 
 (in-package :harp-midi)
 
+(defparameter else t)
+
 ;;;; User interface
 
 (defun harp-midi (arguments)
   (cond ((null arguments)
          (format t "Usage: ~a FILE...~%" (car arguments)))
-        (t
+        (else
          (load-configuration-file)
          (dolist (filename (cdr arguments))
            (cond ((probe-file filename)

@@ -36,7 +36,7 @@ currently there is nothing to configure) put configuration options for Harp-MIDI
 
 * Output format is not configurable.
 * Only works in one octave.
-* Only works for harmonicas with the usual C key &ndash; I think&hellip;
+* Only works for diatonic harmonicas with the usual C key &ndash; I think&hellip;
 * No indication of note value.
 
 ## Copyright
