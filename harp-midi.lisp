@@ -28,19 +28,17 @@
 ;;;; User interface
 
 (defun harp-midi (arguments)
-  (let ((command (car arguments))
-        (filenames (cdr arguments)))
-    (cond ((null arguments)
-           (format t "Usage: ~a FILE...~%" command))
-          (t
-           (load-configuration-file)
-           (dolist (filename filenames)
-             (cond ((probe-file filename)
-                    (format t "~a:~%" filename)
-                    (print-harp (read-midi-file filename)))
-                   (t
-                    (format t "File does not exist: ~a~%" filename)
-                    (return))))))))
+  (cond ((null arguments)
+         (format t "Usage: ~a FILE...~%" (car arguments)))
+        (t
+         (load-configuration-file)
+         (dolist (filename (cdr arguments))
+           (cond ((probe-file filename)
+                  (format t "~a:~%" filename)
+                  (print-harp (read-midi-file filename)))
+                 (t
+                  (format t "File does not exist: ~a~%" filename)
+                  (return)))))))
 
 (defun load-configuration-file ()
   (if (probe-file "~/.harp-midi.lisp")
