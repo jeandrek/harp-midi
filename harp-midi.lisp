@@ -21,41 +21,30 @@
 
 (defpackage :harp-midi
   (:use :common-lisp :midi)
-  (:export))
+  (:export :harp-midi))
 
 (in-package :harp-midi)
 
 ;;;; User interface
 
-(defun harp-midi ()
+(defun harp-midi (arguments)
   (load-configuration-file)
-  (loop
-     (format t "~%Input MIDI file: ")
-     (let ((filename (read-line)))
-       (cond ((probe-file filename)
-              (print-harp (read-midi-file filename))
-              (return))
-             (t (format t "File does not exist: ~a" filename))))))
+  (let ((filenames (cdr arguments)))
+    (if (null filenames)
+        (format t "Usage: harp-midi FILE...~%")
+        (dolist (filename filenames)
+          (cond ((probe-file filename)
+                 (format t "~a:" filename)
+                 (print-harp (read-midi-file filename)))
+                (t
+                 (format t "File does not exist: ~a~%" filename)
+                 (return)))))))
 
 (defun load-configuration-file ()
   (if (probe-file "~/.harp-midi.lisp")
       (load "~/.harp-midi.lisp")))
 
 ;;;; Printing harmonica tabs
-
-(defun print-harp (midi-file)
-  (let* ((track (car (midifile-tracks midi-file)))
-         (time-signature (find-if #'time-signature-message-p track)))
-    (format t "~%~d |" (message-numerator time-signature))
-    (donotes (key track)
-      (format t "~2d" (key->hole key)))
-    (format t "~%~d |" (expt 2 (message-denominator time-signature)))
-    (donotes (key track)
-      (cond ((blowp key) (princ " ↑"))
-            ((drawp key) (princ " ↓"))))))
-
-(defun time-signature-message-p (message)
-  (typep message 'time-signature-message))
 
 (defmacro donotes ((key track) &body body)
   (let ((track-name (gensym))
@@ -72,6 +61,21 @@
            (let ((,key (message-key ,message-name)))
              ,@body)))))
 
+(defun print-harp (midi-file)
+  (let* ((track (car (midifile-tracks midi-file)))
+         (time-signature (find-if #'time-signature-message-p track)))
+    (format t "~%~d |" (message-numerator time-signature))
+    (donotes (key track)
+      (format t "~2d" (key->hole key)))
+    (format t "~%~d |" (expt 2 (message-denominator time-signature)))
+    (donotes (key track)
+      (cond ((blowp key) (princ " ↑"))
+            ((drawp key) (princ " ↓"))))
+    (format t "~%~%")))
+
+(defun time-signature-message-p (message)
+  (typep message 'time-signature-message))
+
 ;;;; Converting MIDI keys to holes and directions
 
 (defun key->hole (key)
@@ -83,5 +87,3 @@
        '(t nil nil nil t nil nil t nil nil nil nil)))
 
 (defun drawp (key) (not (blowp key)))
-
-(harp-midi)

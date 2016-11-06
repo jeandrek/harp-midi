@@ -21,8 +21,8 @@
 
 (defsystem harp-midi
   :description "Convert MIDI files to a format for easy playing on a harmonica."
-  :version "0.1.0"
+  :version "0.1.1"
   :author "Jeandre Kruger"
-  :licence "GNU General Public License"
+  :license "GNU GPLv3"
   :depends-on (midi)
   :components ((:file "harp-midi")))

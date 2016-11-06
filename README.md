@@ -8,16 +8,21 @@ out of it, and the time signature.
 
 ## Installation
 
-To use Harp-MIDI you'll need an implementation of [Common Lisp](https://common-lisp.net/) that works with UTF-8 and
-[ASDF](https://common-lisp.net/project/asdf/). You will also need the cool [Common Lisp MIDI Library]
-(http://www.doc.gold.ac.uk/isms/lisp/midi/).
+To use Harp-MIDI you'll need an implementation of [Common Lisp](https://common-lisp.net/) that works with UTF-8.
+You will also need the cool [Common Lisp MIDI Library](http://www.doc.gold.ac.uk/isms/lisp/midi/).
 
-You can find a list of Common Lisp implementations [here](https://common-lisp.net/downloads/). The recommended way to
-install Harp-MIDI and its dependencies is to use [Quicklisp](https://www.quicklisp.org/). Clone this repository, start
-the Lisp read-eval-print-loop in this directory and run:
+The recommended way to install Harp-MIDI and the Lisp libraries it depends on is to use [Quicklisp](https://www.quicklisp.org/)
+and [Buildapp](http://www.xach.com/lisp/buildapp/).
+Clone this repository, start the Lisp read-eval-print-loop and type the following:
 
 ```lisp
 (ql:quickload "harp-midi")
+```
+
+Then enter the following into your shell:
+
+```sh
+buildapp --asdf-tree ~/quicklisp --asdf-tree . --load-system harp-midi --entry harp-midi:harp-midi --output harp-midi
 ```
 
 ## Configuration
@@ -31,3 +36,18 @@ currently there is nothing to configure) put configuration options for Harp-MIDI
 * Only works in one octave.
 * Only works for harmonicas with the usual C key &ndash; I think&hellip;
 * No indication of note value.
+
+## Copyright
+
+Harp-MIDI is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Harp-MIDI is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Harp-MIDI.  If not, see <http://www.gnu.org/licenses/>.
