@@ -28,7 +28,7 @@
 ;;;; User interface
 
 (defun harp-midi (arguments)
-  (cond ((null arguments)
+  (cond ((null (cdr arguments))
          (format t "Usage: ~a FILE...~%" (car arguments)))
         (t
          (load-configuration-file)
