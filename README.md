@@ -37,7 +37,6 @@ currently there is nothing to configure) put configuration options for Harp-MIDI
 
 * Output format is not configurable.
 * Only works for 10-hole diatonic harmonicas with the usual C key &ndash; I think these are the most common type.
-* No indication of note value.
 * No semitones.
 * Only works for sequential tunes: no tunes with more than one note playing at a time.
 
