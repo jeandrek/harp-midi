@@ -81,9 +81,13 @@
 ;;;; Converting MIDI keys to holes and directions
 
 (defun key->hole (key)
-  ;; TODO: Make this output correct results for any octave.
-  (aref #(4 nil 4 nil 5 5 nil 6 nil 6 nil 7)
-        (mod key 12)))
+  (when (< key 48) (error "Note too low"))
+  (when (> key 84) (error "Note too high"))
+  (aref #(1 nil 1 nil 2 2 nil 3 nil nil nil 3
+          4 nil 4 nil 5 5 nil 6 nil 6 nil 7
+          7 nil 8 nil 8 9 nil 9 nil 10 nil nil
+          10)
+        (- key 48)))
 
 (defun blowp (key)
   (aref #(t nil nil nil t nil nil t nil nil nil nil)
