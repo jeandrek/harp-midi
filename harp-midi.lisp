@@ -65,7 +65,7 @@
 
 (defun print-harp (midifile)
   (let ((time-signature (time-signature (car (midifile-tracks midifile)))))
-    (format t "Time signature: ~d/~d~%" (message-numerator time-signature)
+    (format t "Time signature: ~d/~d~%  " (message-numerator time-signature)
             (expt 2 (message-denominator time-signature)))
     (donotes (note midifile)
       (let ((hole (note->hole note)))
