@@ -34,7 +34,7 @@
          (load-configuration-file)
          (dolist (filename (cdr arguments))
            (cond ((probe-file filename)
-                  (format t "~a: " filename)
+                  (format t "~a:~%" filename)
                   (print-harp (read-midi-file filename)))
                  (t
                   (format t "File does not exist: ~a~%" filename)
@@ -65,7 +65,7 @@
 
 (defun print-harp (midifile)
   (let ((time-signature (time-signature (car (midifile-tracks midifile)))))
-    (format t "~d/~d~%  " (message-numerator time-signature)
+    (format t "Time signature: ~d/~d~%" (message-numerator time-signature)
             (expt 2 (message-denominator time-signature)))
     (donotes (note midifile)
       (let ((hole (note->hole note)))
