@@ -41,8 +41,9 @@
                   (return)))))))
 
 (defun load-configuration-file ()
-  (if (probe-file "~/.harp-midi.lisp")
-      (load "~/.harp-midi.lisp")))
+  (let ((pathname (merge-pathnames (user-homedir-pathname) #p".harp-midi.lisp")))
+    (if (probe-file pathname)
+        (load pathname))))
 
 ;;;; Printing harmonica tabs
 
