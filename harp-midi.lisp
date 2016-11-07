@@ -41,7 +41,7 @@
                   (return)))))))
 
 (defun load-configuration-file ()
-  (let ((pathname (merge-pathnames (user-homedir-pathname) #p".harp-midi.lisp")))
+  (let ((pathname (merge-pathnames (user-homedir-pathname) ".harp-midi.lisp")))
     (if (probe-file pathname)
         (load pathname))))
 
