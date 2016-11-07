@@ -12,10 +12,11 @@ To compile Harp-MIDI you'll need an implementation of [Common Lisp](https://comm
 You will also need the cool [Common Lisp MIDI Library](http://www.doc.gold.ac.uk/isms/lisp/midi/).
 
 The recommended way to compile Harp-MIDI and the Lisp libraries it depends on is to use [Quicklisp](https://www.quicklisp.org/)
-and [Buildapp](http://www.xach.com/lisp/buildapp/).
-Clone this repository, start the Lisp read-eval-print-loop and type the following:
+and [Buildapp](http://www.xach.com/lisp/buildapp/). Clone this repository, start the Lisp read-eval-print-loop in this directory
+and type the following:
 
 ```lisp
+(push #p"./" asdf:*central-registry*)
 (ql:quickload "harp-midi")
 ```
 
