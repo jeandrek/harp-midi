@@ -59,38 +59,41 @@
        ;; For some reason there are always two NOTE ON messages for each note
        ;; and no NOTE OFF messages :-(
        ;; TODO: Find out why and try to fix it.
-       (if (and (oddp ,index-name) (typep ,message-name 'note-on-message))
-           (let ((,key (message-key ,message-name)))
-             ,@body)))))
+       (when (and (oddp ,index-name) (typep ,message-name 'note-on-message))
+         (let ((,key (message-key ,message-name)))
+           ,@body)))))
 
 (defun print-harp (midi-file)
   (let* ((track (car (midifile-tracks midi-file)))
          (time-signature (find-if #'time-signature-message-p track)))
     (format t "  ~d |" (message-numerator time-signature))
-    (donotes (key track)
-      (format t "~2d" (key->hole key)))
+    (donotes (note track)
+      (let ((hole (note->hole note)))
+        (if hole
+            (format t "~2d" hole)
+            (return-from print-harp))))
     (format t "~%  ~d |" (expt 2 (message-denominator time-signature)))
-    (donotes (key track)
-      (cond ((blowp key) (princ " ↑"))
-            ((drawp key) (princ " ↓"))))
+    (donotes (note track)
+      (cond ((blowp note) (princ " ↑"))
+            ((drawp note) (princ " ↓"))))
     (format t "~%~%")))
 
 (defun time-signature-message-p (message)
   (typep message 'time-signature-message))
 
-;;;; Converting MIDI keys to holes and directions
+;;;; Converting MIDI notes to holes and directions
 
-(defun key->hole (key)
-  (when (< key 48) (error "Note too low"))
-  (when (> key 84) (error "Note too high"))
-  (aref #(1 nil 1 nil 2 2 nil 3 nil nil nil 3
-          4 nil 4 nil 5 5 nil 6 nil 6 nil 7
-          7 nil 8 nil 8 9 nil 9 nil 10 nil nil
-          10)
-        (- key 48)))
+(defun note->hole (note)
+  (cond ((< note 48) (format t "~%Note too high: ~d~%" note))
+        ((> note 84) (format t "~%Note too low: ~d~%" note))
+        (t (aref #(1 nil 1 nil 2 2 nil 3 nil nil nil 3
+                   4 nil 4 nil 5 5 nil 6 nil 6 nil 7
+                   7 nil 8 nil 8 9 nil 9 nil 10 nil nil
+                   10)
+                 (- key 48)))))
 
-(defun blowp (key)
+(defun blowp (note)
   (aref #(t nil nil nil t nil nil t nil nil nil nil)
-        (mod key 12)))
+        (mod note 12)))
 
-(defun drawp (key) (not (blowp key)))
+(defun drawp (note) (not (blowp note)))
