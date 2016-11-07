@@ -15,14 +15,14 @@ The recommended way to compile Harp-MIDI and the Lisp libraries it depends on is
 and [Buildapp](http://www.xach.com/lisp/buildapp/). Clone this repository, start the Lisp read-eval-print-loop in this directory
 and type the following:
 
-```lisp
+```
 (push #p"./" asdf:*central-registry*)
 (ql:quickload "harp-midi")
 ```
 
 Then enter the following into your shell:
 
-```sh
+```
 buildapp --asdf-tree ~/quicklisp --asdf-tree . --load-system harp-midi --entry harp-midi:harp-midi --output harp-midi
 ```
 
