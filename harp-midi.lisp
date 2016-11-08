@@ -84,11 +84,13 @@
 
 (defun print-time-signature (track)
   (let ((time-signature (time-signature track)))
-    (format t " Time signature: ~d/~d~% " (car time-signature) (cdr time-signature))))
+    (if time-signature
+        (format t " Time signature: ~d/~d~% " (car time-signature) (cdr time-signature)))))
 
 (defun time-signature (track)
   (let ((message (find-if #'time-signature-message-p track)))
-    (cons (message-numerator message) (expt 2 (message-denominator message)))))
+    (if message
+        (cons (message-numerator message) (expt 2 (message-denominator message))))))
 
 (defun notes (track)
   (do ((track track (cdr track))
