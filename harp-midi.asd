@@ -1,5 +1,3 @@
-;;;; -*- eval: (put 'defsystem 'lisp-indent-function 1); -*-
-
 ;;;; System definition for Harp-MIDI.
 
 ;;;; Copyright (C) 2016 Jeandre Kruger
