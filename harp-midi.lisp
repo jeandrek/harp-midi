@@ -68,19 +68,19 @@
 (defparameter *the-midifile* nil)
 
 (defun print-harp (*the-midifile*)
-  (let* ((track (nth *track* (midifile-tracks *the-midifile*)))
-         (notes (notes track)))
+  (let ((track (nth *track* (midifile-tracks *the-midifile*))))
     (print-time-signature track)
-    (dolist (note notes)
-      (format t "~2d" (note->hole note)))
-    (format t "~% ")
-    (dolist (note notes)
-      (cond ((blowp note) (princ " ↑"))
-            ((drawp note) (princ " ↓"))))
-    (format t "~% ")
-    (dolist (note notes)
-      (format t "~2d" (duration note)))
-    (terpri)))
+    (let ((notes (notes track)))
+      (dolist (hole (mapcar #'note->hole notes))
+        (format t "~2d" hole))
+      (format t "~% ")
+      (dolist (note notes)
+        (cond ((blowp note) (princ " ↑"))
+              ((drawp note) (princ " ↓"))))
+      (format t "~% ")
+      (dolist (note notes)
+        (format t "~2d" (duration note)))))
+  (terpri))
 
 (defun print-time-signature (track)
   (let ((time-signature (time-signature track)))
@@ -137,11 +137,13 @@
   (let ((pitch (pitch note)))
     (cond ((< pitch 48) (signal-error "Note too low: ~d" pitch))
           ((> pitch 84) (signal-error "Note too high: ~d" pitch))
-          (t (aref #(1 nil 1 nil 2 2 nil 3 nil nil nil 3
-                     4 nil 4 nil 5 5 nil 6 nil 6 nil 7
-                     7 nil 8 nil 8 9 nil 9 nil 10 nil nil
-                     10)
-                   (- pitch 48))))))
+          (t
+           (or (aref #(1 nil 1 nil 2 2 nil 3 nil nil nil 3
+                       4 nil 4 nil 5 5 nil 6 nil 6 nil 7
+                       7 nil 8 nil 8 9 nil 9 nil 10 nil nil
+                       10)
+                     (- pitch 48))
+               (signal-error "Semitone: ~d" pitch))))))
 
 (defun blowp (note)
   (aref #(t nil nil nil t nil nil t nil nil nil nil)
