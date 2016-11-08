@@ -21,7 +21,7 @@
 
 (defpackage :harp-midi
   (:use :common-lisp :midi)
-  (:export :harp-midi))
+  (:export :harp-midi :*track*))
 
 (in-package :harp-midi)
 
@@ -29,29 +29,48 @@
 
 (defun harp-midi (arguments)
   (cond ((null (cdr arguments))
-         (format t "Usage: ~a FILE...~%" (car arguments)))
+         (format t "Usage: ~a [option or filename ...]~%" (car arguments)))
         (t
          (load-configuration-file)
-         (dolist (filename (cdr arguments))
-           (cond ((probe-file filename)
-                  (format t "~a:~%" filename)
-                  (print-harp (read-midi-file filename)))
-                 (t
-                  (format t "File does not exist: ~a~%" filename)
-                  (return)))))))
+         (do ((arguments (cdr arguments) (cdr arguments)))
+             ((null arguments))
+           (let ((argument (car arguments)))
+             (cond ((command-line-option-p argument)
+                    (setf (symbol-value (command-line-option->symbol argument))
+                          (read-from-string (cadr arguments)))
+                    (setf arguments (cdr arguments)))
+                   ((probe-file argument)
+                    (format t "~a:~%" argument)
+                    (print-harp (read-midi-file argument)))
+                   (t
+                    (format t "File does not exist: ~a~%" argument)
+                    (return))))))))
 
 (defun load-configuration-file ()
   (let ((pathname (merge-pathnames (user-homedir-pathname) ".harp-midi.lisp")))
     (if (probe-file pathname)
         (load pathname))))
 
-;;;; Printing harmonica tabs
+(defun command-line-option-p (argument)
+  (and (>= (length argument) 2)
+       (string= (subseq argument 0 2) "--")))
 
-(defmacro donotes ((note-name midifile) &body body)
+(defun command-line-option->symbol (argument)
+  (intern (concatenate 'string "*" (string-upcase (subseq argument 2)) "*") 'harp-midi))
+
+;;;; Configurable options
+
+(defparameter *track* 0)
+
+;;;; Printing output for harmonica
+
+(defparameter *the-midifile* nil)
+
+(defmacro donotes ((note-name track-exp) &body body)
   (let ((track-name (gensym))
         (index-name (gensym))
         (message-name (gensym)))
-    `(do* ((,track-name (car (midifile-tracks ,midifile)) (cdr ,track-name))
+    `(do* ((,track-name ,track-exp (cdr ,track-name))
            (,index-name 0 (+ ,index-name 1))
            (,message-name (car ,track-name) (car ,track-name)))
           ((null ,track-name))
@@ -60,32 +79,31 @@
                 (make-note
                  (message-key ,message-name)
                  (round (- (message-time (cadr ,track-name)) (message-time ,message-name))
-                        (midifile-division midifile)))))
+                        (midifile-division *the-midifile*)))))
            ,@body)))))
 
-(defun print-harp (midifile)
-  (let ((time-signature (time-signature (car (midifile-tracks midifile)))))
-    (format t " Time signature: ~d/~d~% " (message-numerator time-signature)
-            (expt 2 (message-denominator time-signature)))
-    (donotes (note midifile)
+(defun print-harp (*the-midifile*)
+  (let ((track (nth *track* (midifile-tracks *the-midifile*))))
+    (format t " Time signature: ~d~% " (time-signature track))
+    (donotes (note track)
       (let ((hole (note->hole note)))
         (if hole
             (format t "~2d" hole)
             (return-from print-harp))))
     (format t "~% ")
-    (donotes (note midifile)
+    (donotes (note track)
       (cond ((blowp note) (princ " ↑"))
             ((drawp note) (princ " ↓"))))
     (format t "~% ")
-    (donotes (note midifile)
+    (donotes (note track)
       (format t "~2d" (duration note)))
     (format t "~%~%")))
 
-(defun time-signature-message-p (message)
-  (typep message 'time-signature-message))
-
 (defun time-signature (track)
-  (find-if #'(lambda (message) (typep message 'time-signature-message)) track))
+  (labels ((time-signature-message-p (message)
+             (typep message 'time-signature-message)))
+    (let ((message (find-if #'time-signature-message-p track)))
+      (/ (message-numerator message) (expt 2 (message-denominator message))))))
 
 ;;;; Notes
 

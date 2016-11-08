@@ -30,8 +30,10 @@ Now you should have a binary `harp-midi` in your current directory.
 
 ## Configuration
 
-Upon startup Harp-MIDI loads the Lisp file at `~/.harp-midi.lisp`, if it exists. Here you (will be able to &ndash;
-currently there is nothing to configure) put configuration options for Harp-MIDI.
+Upon startup Harp-MIDI loads the Lisp file at `~/.harp-midi.lisp`, if it exists. Here you can put values for options for Harp-MIDI.
+
+Options are stored in variables in the `harp-midi` package. Any option can be assigned to and can be overrided with a
+command-line option.
 
 ## Current Limitations
 
@@ -48,4 +50,5 @@ as published by the Free Software Foundation, either version 3 of the License, o
 Harp-MIDI is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Harp-MIDI.  If not, see http://www.gnu.org/licenses/.
+You should have received a copy of the GNU General Public License along with Harp-MIDI.  If not, see
+http://www.gnu.org/licenses/.
