@@ -143,7 +143,7 @@
                        7 nil 8 nil 8 9 nil 9 nil 10 nil nil
                        10)
                      (- pitch 48))
-               (signal-error "Semitone: ~d" pitch))))))
+               (signal-error "Note cannot be played: ~d" pitch))))))
 
 (defun blowp (note)
   (aref #(t nil nil nil t nil nil t nil nil nil nil)
