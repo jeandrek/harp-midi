@@ -68,18 +68,19 @@
 (defparameter *the-midifile* nil)
 
 (defun print-harp (*the-midifile*)
-  (let ((track (nth *track* (midifile-tracks *the-midifile*))))
+  (let* ((track (nth *track* (midifile-tracks *the-midifile*)))
+         (notes (notes track))
+         (holes (mapcar #'note->hole notes)))
     (print-time-signature track)
-    (let ((notes (notes track)))
-      (dolist (hole (mapcar #'note->hole notes))
-        (format t "~2d" hole))
-      (format t "~% ")
-      (dolist (note notes)
-        (cond ((blowp note) (princ " ↑"))
-              ((drawp note) (princ " ↓"))))
-      (format t "~% ")
-      (dolist (note notes)
-        (format t "~2d" (duration note)))))
+    (dolist (hole holes)
+      (format t "~2d" hole))
+    (format t "~% ")
+    (dolist (note notes)
+      (cond ((blowp note) (princ " ↑"))
+            ((drawp note) (princ " ↓"))))
+    (format t "~% ")
+    (dolist (note notes)
+      (format t "~2d" (duration note))))
   (terpri))
 
 (defun print-time-signature (track)
@@ -135,21 +136,32 @@
 
 (defun note->hole (note)
   (let ((pitch (pitch note)))
-    (cond ((< pitch 48) (signal-error "Note too low: ~d" pitch))
-          ((> pitch 84) (signal-error "Note too high: ~d" pitch))
+    (cond ((< pitch 48) (signal-error "Note too low: ~/harp-midi::print-note/" note))
+          ((> pitch 84) (signal-error "Note too high: ~/harp-midi::print-note/" note))
           (t
            (or (aref #(1 nil 1 nil 2 2 nil 3 nil nil nil 3
                        4 nil 4 nil 5 5 nil 6 nil 6 nil 7
                        7 nil 8 nil 8 9 nil 9 nil 10 nil nil
                        10)
                      (- pitch 48))
-               (signal-error "Note cannot be played: ~d" pitch))))))
+               (signal-error "Note cannot be played: ~/harp-midi::print-note/" note))))))
 
 (defun blowp (note)
   (aref #(t nil nil nil t nil nil t nil nil nil nil)
         (mod (pitch note) 12)))
 
 (defun drawp (note) (not (blowp note)))
+
+;;;; Printing notes for users
+
+(defun print-note (stream note &optional colonp at-sign-p)
+  (format stream "~a in the ~:r octave" (note-name note) (note-octave note)))
+
+(defun note-name (note)
+  (aref #("C" "C#" "D" "D#" "E" "F" "F#" "G" "G#" "A" "A#" "B")
+        (mod (pitch note) 12)))
+
+(defun note-octave (note) (floor (pitch note) 12))
 
 ;;;; Signalling errors
 
