@@ -4,7 +4,7 @@ Harp-MIDI is a program to convert [Standard MIDI Files](https://en.wikipedia.org
 into a format for easy playing on a harmonica.
 
 This format shows, for each note, the number of the hole you need to use and whether you need to blow in it or draw
-out of it, and the time signature.
+out of it, the note value, and the time signature.
 
 ## Compilation
 
